@@ -33,7 +33,7 @@ spec:
       containers:
       - image: udacity/nd064-udaconnect-app:latest
         name: udaconnect-app
-        imagePullPolicy: Always
+        command: ['sh', '-c', 'echo Hello Kubernetes! && sleep 3600']
         resources:
           requests:
             memory: "128Mi"
@@ -42,3 +42,4 @@ spec:
             memory: "256Mi"
             cpu: "256m"
       restartPolicy: Always
+      
