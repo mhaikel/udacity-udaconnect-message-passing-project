@@ -1,0 +1,19 @@
+Message passing techniques of choice are:
+- REST 
+- gRPC
+- Message Queues using Kafka
+
+In order to facilitate integration with the various HTTP routes, the frontend client makes use of REST message
+passing techniique. REST offers a comparatively high throughput in API performance and is the most 
+straightforward method of message transfer that doesn't add needless complexity to our system so as to provide
+ease for integration to the required APIs.
+For the purpose of consuming a sizable amount of location data from the mobile devices, gRPC was selected as 
+the message passing protocol. The decision was made to take advantage of gRPC's enhanced performance, 
+which includes less connection overhead and overall payload size.  By doing this, we can make sure that our
+system is capable of handling the massive amount of location data that will be provided from various 
+mobile devices.
+The location consumer service manages the ingested location data using a message queue (Kafka). 
+This will enable decoupling of our systems as well as enhanced performance and reliability 
+(without losing imported data). Due to the advantages of the two message passing techniques, 
+using the message queue along with gRPC for the ingestion of location data from the mobile device offers a 
+variety of benefits.

@@ -19,6 +19,9 @@ To do so, ***you will refactor this application into a microservice architecture
 * [VirtualBox](https://www.virtualbox.org/) - Hypervisor allowing you to run multiple operating systems
 * [K3s](https://k3s.io/) - Lightweight distribution of K8s to easily develop against a local cluster
 
+### Architecture
+![Architecture Diagram](docs/architecture_design.png)
+
 ## Running the app
 The project has been set up such that you should be able to have the project up and running with Kubernetes.
 
@@ -76,16 +79,67 @@ Type `exit` to exit the virtual OS and you will find yourself back in your compu
 Afterwards, you can test that `kubectl` works by running a command like `kubectl describe services`. It should not return any errors.
 
 ### Steps
-1. `kubectl apply -f deployment/db-configmap.yaml` - Set up environment variables for the pods
-2. `kubectl apply -f deployment/db-secret.yaml` - Set up secrets for the pods
-3. `kubectl apply -f deployment/postgres.yaml` - Set up a Postgres database running PostGIS
-4. `kubectl apply -f deployment/udaconnect-api.yaml` - Set up the service and deployment for the API
-5. `kubectl apply -f deployment/udaconnect-app.yaml` - Set up the service and deployment for the web app
-6. `sh scripts/run_db_command.sh <POD_NAME>` - Seed your database against the `postgres` pod. (`kubectl get pods` will give you the `POD_NAME`)
+1. #### Setup Kafka:
+
+    ```
+    # Install helm on the guest VM
+    curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+
+    chmod 700 get_helm.sh
+
+    ./get_helm.sh
+
+    helm install udaconnect-kafka bitnami/kafka  --kubeconfig /etc/rancher/k3s/k3s.yaml 
+
+    # verify the installation
+    kubectl get pods
+
+    # Wait until 'kafka-0' pod is in the running state, then run the following commands
+
+    # Get the pod name for the kafka container
+    export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=kafka,app.kubernetes.io/instance=udaconnect-kafka,app.kubernetes.io/component=kafka" -o jsonpath="{.items[0].metadata.name}")
+
+    export BOOTSTRAP_SERVER=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=kafka,app.kubernetes.io/instance=udaconnect-kafka,app.kubernetes.io/component=kafka" -o jsonpath="{.items[0].spec.subdomain}")
+
+    # Set the topic name
+    export TOPIC="location-data"
+
+    # Create topic
+    kubectl exec -it $POD_NAME -- kafka-topics.sh \
+        --create --bootstrap-server $BOOTSTRAP_SERVER:9092 \
+        --replication-factor 1 --partitions 1 \
+        --topic $TOPIC
+    ```
+2. `kubectl apply -f deployment/kafka-configmap.yaml` - Set up kafka environment variables for the pods    
+3. `kubectl apply -f deployment/db-configmap.yaml` - Set up environment variables for the pods
+4. `kubectl apply -f deployment/db-secret.yaml` - Set up secrets for the pods
+5. `kubectl apply -f deployment/postgres.yaml` - Set up a Postgres database running PostGIS
+6. `kubectl apply -f deployment/udaconnect-api.yaml` - Set up the service and deployment for the API
+7. `kubectl apply -f deployment/udaconnect-app.yaml` - Set up the service and deployment for the web app
+8. `kubectl apply -f deployment/udaconnect-person-service.yaml` - Set up the service and deployment for the Persons API
+9. `kubectl apply -f deployment/udaconnect-connection-service.yaml` - Set up the service and deployment for the Connections API
+10. `sh scripts/run_db_command.sh <POD_NAME>` - Seed your database against the `postgres` pod. (`kubectl get pods` will give you the `POD_NAME`)
 
 Manually applying each of the individual `yaml` files is cumbersome but going through each step provides some context on the content of the starter project. In practice, we would have reduced the number of steps by running the command against a directory to apply of the contents: `kubectl apply -f deployment/`.
 
 Note: The first time you run this project, you will need to seed the database with dummy data. Use the command `sh scripts/run_db_command.sh <POD_NAME>` against the `postgres` pod. (`kubectl get pods` will give you the `POD_NAME`). Subsequent runs of `kubectl apply` for making changes to deployments or services shouldn't require you to seed the database again!
+11. `kubectl apply -f deployment/udaconnect-location-service.yaml` - Set up the location service
+12. `kubectl apply -f deployment/udaconnect-location-consumer-service.yaml` - Set up the location consumer service
+
+13. Insert sample location data via gRPC using the sample gRPC client
+    
+    ```
+    export LOCATION_INGESTER_POD=$(kubectl get pods --namespace default -l "app=udaconnect-location-ingester" -o jsonpath="{.items[0].metadata.name}")
+
+    kubectl exec -it $LOCATION_INGESTER_POD sh
+    ```
+    
+    Once you are inside the shell, execute the grpc client with the command below (*you can run this several times, as it randomly generates location data for various users*):
+
+    ```
+    python grpc_client.py
+    ```
+
 
 ### Verifying it Works
 Once the project is up and running, you should be able to see 3 deployments and 3 services in Kubernetes:
@@ -93,9 +147,13 @@ Once the project is up and running, you should be able to see 3 deployments and 
 
 
 These pages should also load on your web browser:
-* `http://localhost:30001/` - OpenAPI Documentation
-* `http://localhost:30001/api/` - Base path for API
 * `http://localhost:30000/` - Frontend ReactJS Application
+* `http://localhost:30001/` - OpenAPI Documentation for legacy API
+* `http://localhost:30001/api/` - Base path for legacy API
+* `http://localhost:30002/` - OpenAPI Documentation for Persons API
+* `http://localhost:30002/api/` - Base path for Persons API
+* `http://localhost:30003/` - OpenAPI Documentation for Connections API
+* `http://localhost:30003/api/` - Base path for Connections API
 
 #### Deployment Note
 You may notice the odd port numbers being served to `localhost`. [By default, Kubernetes services are only exposed to one another in an internal network](https://kubernetes.io/docs/concepts/services-networking/service/). This means that `udaconnect-app` and `udaconnect-api` can talk to one another. For us to connect to the cluster as an "outsider", we need to a way to expose these services to `localhost`.
