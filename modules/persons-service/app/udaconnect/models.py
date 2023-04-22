@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from app import db  # noqa
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.dialects.postgresql import JSONB, UUID
 
 
 class Person(db.Model):

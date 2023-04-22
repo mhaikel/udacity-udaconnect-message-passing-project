@@ -1,14 +1,17 @@
 from app.udaconnect.models import Person
-from app.udaconnect.schemas import PersonSchema
+from app.udaconnect.schemas import (
+    PersonSchema,
+)
 from app.udaconnect.services import PersonService
 from flask import request
 from flask_accepts import accepts, responds
 from flask_restx import Namespace, Resource
-from typing import Optional, List
+from typing import List
 
 DATE_FORMAT = "%Y-%m-%d"
 
 api = Namespace("UdaConnect", description="Connections via geolocation.")  # noqa
+
 
 @api.route("/persons")
 class PersonsResource(Resource):
@@ -32,4 +35,3 @@ class PersonResource(Resource):
     def get(self, person_id) -> Person:
         person: Person = PersonService.retrieve(person_id)
         return person
-

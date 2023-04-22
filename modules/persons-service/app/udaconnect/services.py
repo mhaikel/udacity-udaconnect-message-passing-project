@@ -3,11 +3,10 @@ from typing import Dict, List
 
 from app import db
 from app.udaconnect.models import Person
-from geoalchemy2.functions import ST_AsText, ST_Point
-from sqlalchemy.sql import text
 
 logging.basicConfig(level=logging.WARNING)
-logger = logging.getLogger("udaconnect-persons-api")
+logger = logging.getLogger("persons-api")
+
 
 class PersonService:
     @staticmethod

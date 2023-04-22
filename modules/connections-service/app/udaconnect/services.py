@@ -4,11 +4,12 @@ from typing import Dict, List
 
 from app import db
 from app.udaconnect.models import Connection, Location, Person
-from geoalchemy2.functions import ST_AsText, ST_Point
+from app.udaconnect.schemas import ConnectionSchema, LocationSchema, PersonSchema
+from geoalchemy2.functions import ST_Point
 from sqlalchemy.sql import text
 
 logging.basicConfig(level=logging.WARNING)
-logger = logging.getLogger("udaconnect-connections-api")
+logger = logging.getLogger("connections-api")
 
 
 class ConnectionService:
@@ -78,6 +79,7 @@ class ConnectionService:
                 )
 
         return result
+
 
 
 class PersonService:
