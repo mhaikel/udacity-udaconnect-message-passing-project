@@ -1,0 +1,333 @@
+{
+	"info": {
+		"_postman_id": "cb39666d-8383-46c5-98e7-0bbd251fd3f2",
+		"name": "UdaConnect APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9269700"
+	},
+	"item": [
+		{
+			"name": "Persons Microservice",
+			"item": [
+				{
+					"name": "Get Persons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:30002/api/persons",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "30002",
+							"path": [
+								"api",
+								"persons"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Persons Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:30002/api/persons",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "30002",
+									"path": [
+										"api",
+										"persons"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "567"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.16.1 Python/3.7.16"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 21 Apr 2023 23:34:00 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"company_name\": \"Alpha Omega Upholstery\",\n        \"last_name\": \"Fargo\",\n        \"first_name\": \"Taco\",\n        \"id\": 5\n    },\n    {\n        \"company_name\": \"USDA\",\n        \"last_name\": \"Shader\",\n        \"first_name\": \"Frank\",\n        \"id\": 6\n    },\n    {\n        \"company_name\": \"Hampton, Hampton and McQuill\",\n        \"last_name\": \"Trexler\",\n        \"first_name\": \"Pam\",\n        \"id\": 1\n    },\n    {\n        \"company_name\": \"Paul Badman & Associates\",\n        \"last_name\": \"Badman\",\n        \"first_name\": \"Paul\",\n        \"id\": 8\n    },\n    {\n        \"company_name\": \"The Chicken Sisters Restaurant\",\n        \"last_name\": \"Spring\",\n        \"first_name\": \"Otto\",\n        \"id\": 9\n    },\n    {\n        \"company_name\": \"test\",\n        \"last_name\": \"Abah\",\n        \"first_name\": \"Mike\",\n        \"id\": 2\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get Person by Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:30002/api/persons/2",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "30002",
+							"path": [
+								"api",
+								"persons",
+								"2"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Person by Id Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:30002/api/persons/2",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "30002",
+									"path": [
+										"api",
+										"persons",
+										"2"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "77"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.16.1 Python/3.7.16"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 21 Apr 2023 23:37:55 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"company_name\": \"test\",\n    \"last_name\": \"Abah\",\n    \"first_name\": \"Mike\",\n    \"id\": 2\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Person",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_name\": \"Alpha Omega Beta\",\n    \"last_name\": \"Don\",\n    \"first_name\": \"Jay\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:30002/api/persons",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "30002",
+							"path": [
+								"api",
+								"persons"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Person Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"company_name\": \"Alpha Omega Beta\",\n    \"last_name\": \"Don\",\n    \"first_name\": \"Jay\"\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:30002/api/persons",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "30002",
+									"path": [
+										"api",
+										"persons"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "87"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.16.1 Python/3.7.16"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 21 Apr 2023 23:39:32 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"company_name\": \"Alpha Omega Beta\",\n    \"last_name\": \"Don\",\n    \"first_name\": \"Jay\",\n    \"id\": 4\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Connections Microservice",
+			"item": [
+				{
+					"name": "Get Connections",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "Get Connections",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:30003/api/persons/2/connection?distance=1&end_date=2023-04-22&start_date=2020-04-22",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "30003",
+									"path": [
+										"api",
+										"persons",
+										"2",
+										"connection"
+									],
+									"query": [
+										{
+											"key": "distance",
+											"value": "1"
+										},
+										{
+											"key": "end_date",
+											"value": "2023-04-22"
+										},
+										{
+											"key": "start_date",
+											"value": "2020-04-22"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Server",
+									"value": "Werkzeug/0.16.1 Python/3.7.16"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 22 Apr 2023 00:55:02 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "[]"
+						}
+					]
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,123 @@
+openapi: 3.0.1
+info:
+  title: Person/Connection Endpoints
+  description: Provides API documentation for Person and Connection APIS
+  version: '1.0'
+servers:
+  - url: http://localhost:30002
+    description: persons api
+paths:
+  /api/persons/personId:
+    get:
+      description: Get person by person id
+      responses:
+        '200':
+          description: returns person that matches the supplied id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  company_name:
+                    type: string
+                  last_name:
+                    type: string
+                  id:
+                    type: integer
+                  first_name:
+                    type: string
+              examples:
+                '0':
+                  value: >
+                    {"company_name": "test", "last_name": "Abah", "first_name":
+                    "Mike", "id": 2}
+
+    servers:
+      - url: http://localhost:30002
+  /api/persons:
+    get:
+      description: Returns a list of saved persons
+      responses:
+        '200':
+          description: Returns a list of persons
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                '0':
+                  value: >
+                    [{"company_name": "Alpha Omega Upholstery", "last_name":
+                    "Fargo", "first_name": "Taco", "id": 5}, {"company_name":
+                    "USDA", "last_name": "Shader", "first_name": "Frank", "id":
+                    6}, {"company_name": "Hampton, Hampton and McQuill",
+                    "last_name": "Trexler", "first_name": "Pam", "id": 1},
+                    {"company_name": "Paul Badman & Associates", "last_name":
+                    "Badman", "first_name": "Paul", "id": 8}, {"company_name":
+                    "The Chicken Sisters Restaurant", "last_name": "Spring",
+                    "first_name": "Otto", "id": 9}]
+      servers:
+        - url: http://localhost:30002
+    post:
+      description: Creates a person
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                company_name:
+                  type: string
+                last_name:
+                  type: string
+                id:
+                  type: integer
+                first_name:
+                  type: string
+            examples:
+              '0':
+                value: |-
+                  {
+                  "id" : 120,
+                  "first_name" : "Mike",
+                  "last_name" : "Abah",
+                  "company_name" : "test"
+                  }
+      responses:
+        default:
+          description: Auto generated using Swagger Inspector
+      
+    servers:
+      - url: http://localhost:30003
+  /api/persons/personId/connection:
+    get:
+      description: Returns connections for a supplied person id
+      parameters:
+        - name: end_date
+          in: query
+          schema:
+            type: string
+          example: '2023-04-22'
+        - name: distance
+          in: query
+          schema:
+            type: string
+          example: '1'
+        - name: start_date
+          in: query
+          schema:
+            type: string
+          example: '2020-04-22'
+      responses:
+        '200':
+          description: returns connections for a supplied person id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                '0':
+                  value: |
+                    []

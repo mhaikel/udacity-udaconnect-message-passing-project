@@ -79,65 +79,60 @@ Type `exit` to exit the virtual OS and you will find yourself back in your compu
 Afterwards, you can test that `kubectl` works by running a command like `kubectl describe services`. It should not return any errors.
 
 ### Steps
-1. #### Setup Kafka:
+1. Set up kafka brooker using the following steps:
+      ```shell
+      $ helm repo add bitnami https://charts.bitnami.com/bitnami
+      $ helm repo list
 
-    ```
-    # Install helm on the guest VM
-    curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+      NAME        	URL                                           
+      bitnami     	https://charts.bitnami.com/bitnami        
+      ```
 
-    chmod 700 get_helm.sh
+      Install kafka helm chart
+      ```shell
+      $ helm install kafka-release bitnami/kafka           
 
-    ./get_helm.sh
+        You'll see an output like that.
 
-    helm install udaconnect-kafka bitnami/kafka  --kubeconfig /etc/rancher/k3s/k3s.yaml 
+        NAME: kafka-release
+        LAST DEPLOYED: Wed Dec 23 19:33:16 2020
+        NAMESPACE: default
+        STATUS: deployed
+        REVISION: 1
+        TEST SUITE: None
+        NOTES:
+        ...
+      ```
 
-    # verify the installation
-    kubectl get pods
+      Give it some time to complete the install and run kubectl get pods command to get the output for the kafka set up below:
+      ```shell
+      $ kubectl get pods
+          NAME                        READY   STATUS    RESTARTS   AGE
+          kafka-release-zookeeper-0   1/1     Running   0          7m30s
+          kafka-release-0             1/1     Running   1          7m30s
+      ```
 
-    # Wait until 'kafka-0' pod is in the running state, then run the following commands
 
-    # Get the pod name for the kafka container
-    export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=kafka,app.kubernetes.io/instance=udaconnect-kafka,app.kubernetes.io/component=kafka" -o jsonpath="{.items[0].metadata.name}")
-
-    export BOOTSTRAP_SERVER=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=kafka,app.kubernetes.io/instance=udaconnect-kafka,app.kubernetes.io/component=kafka" -o jsonpath="{.items[0].spec.subdomain}")
-
-    # Set the topic name
-    export TOPIC="location-data"
-
-    # Create topic
-    kubectl exec -it $POD_NAME -- kafka-topics.sh \
-        --create --bootstrap-server $BOOTSTRAP_SERVER:9092 \
-        --replication-factor 1 --partitions 1 \
-        --topic $TOPIC
-    ```
-2. `kubectl apply -f deployment/kafka-configmap.yaml` - Set up kafka environment variables for the pods    
+2. `kubectl apply -f deployment/kafka-config.yaml` - Set up kafka environment variables for the pods    
 3. `kubectl apply -f deployment/db-configmap.yaml` - Set up environment variables for the pods
 4. `kubectl apply -f deployment/db-secret.yaml` - Set up secrets for the pods
 5. `kubectl apply -f deployment/postgres.yaml` - Set up a Postgres database running PostGIS
 6. `kubectl apply -f deployment/udaconnect-api.yaml` - Set up the service and deployment for the API
 7. `kubectl apply -f deployment/udaconnect-app.yaml` - Set up the service and deployment for the web app
-8. `kubectl apply -f deployment/udaconnect-person-service.yaml` - Set up the service and deployment for the Persons API
-9. `kubectl apply -f deployment/udaconnect-connection-service.yaml` - Set up the service and deployment for the Connections API
-10. `sh scripts/run_db_command.sh <POD_NAME>` - Seed your database against the `postgres` pod. (`kubectl get pods` will give you the `POD_NAME`)
+8. `kubectl apply -f deployment/udaconnect-persons-api.yaml` - Set up the service and deployment for the Persons API
+9. `kubectl apply -f deployment/udaconnect-connections-api.yaml` - Set up the service and deployment for the Connections API
+10. `kubectl apply -f deployment/location-service.yaml` - Set up the location service
+11. `kubectl apply -f deployment/location-event-consumer-grpc.yaml` - Set up the location consumer service
+12. `sh scripts/run_db_command.sh <POD_NAME>` - Seed your database against the `postgres` pod. (`kubectl get pods` will give you the `POD_NAME`)
 
 Manually applying each of the individual `yaml` files is cumbersome but going through each step provides some context on the content of the starter project. In practice, we would have reduced the number of steps by running the command against a directory to apply of the contents: `kubectl apply -f deployment/`.
 
 Note: The first time you run this project, you will need to seed the database with dummy data. Use the command `sh scripts/run_db_command.sh <POD_NAME>` against the `postgres` pod. (`kubectl get pods` will give you the `POD_NAME`). Subsequent runs of `kubectl apply` for making changes to deployments or services shouldn't require you to seed the database again!
-11. `kubectl apply -f deployment/udaconnect-location-service.yaml` - Set up the location service
-12. `kubectl apply -f deployment/udaconnect-location-consumer-service.yaml` - Set up the location consumer service
 
-13. Insert sample location data via gRPC using the sample gRPC client
+14. Insert sample location events data via gRPC using the sample gRPC client in the location-consumer-service
     
     ```
-    export LOCATION_INGESTER_POD=$(kubectl get pods --namespace default -l "app=udaconnect-location-ingester" -o jsonpath="{.items[0].metadata.name}")
-
-    kubectl exec -it $LOCATION_INGESTER_POD sh
-    ```
-    
-    Once you are inside the shell, execute the grpc client with the command below (*you can run this several times, as it randomly generates location data for various users*):
-
-    ```
-    python grpc_client.py
+    python location-event-grpc-client.py
     ```
 
 

@@ -1,0 +1,22 @@
+gRPC documentation:
+
+For the implementation of the grpc message passing technique for retrieving users location data, go the
+location consumer service. The service is served on port 5005.
+The payload should conform to the protobuf definition below:
+
+message LocationEventMessage {
+    int32 userId = 1;
+    string latitude = 2;
+    string longitude = 3;
+}
+
+A sample valid message is given below:
+
+{
+    "userId": 1,
+    "latitude": "28.012345678",
+    "longitude": "10.1234567"
+}
+
+To simplify things, the location-event-grpc-client.py file in the location-consumer-service folder contains
+the script to send sample location data to the gRPC server.

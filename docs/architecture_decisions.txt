@@ -1,0 +1,17 @@
+The Location Consumer Service which contains the logic for receiving the location events of users to the saved
+to the DB uses the grpc message passing model. 
+The choice of grpc is due to the following reasons:
+1. Since most of the location data will be coming from mobile devices, gRPC can create effective backend server
+   and mobile communication because it allows quick, low-latency communication making it a great choice for
+   the location consumer service.
+2. Due to the large number of data that will be received for user locations, gRPC is a highly performant message passing
+   technique which would be useful in consuming this large data volume.
+
+Kafka is used as the message queue for receiving the location events from the location service. The choice of
+of kafka for the message queue is due the fact that kafka is a distributed message queue that can handle
+real-time processing of data as is the case here for multiple location events. Kafka also provides an excellent
+choice for scaling the system to handle high volume of user location data.
+
+The Person Service and Connection Service both utilize REST for their message passing technique. REST provides
+an excellent choice for these services because there is a direct communication between these services and the
+front end client as such enabling seamless integration to these services.
